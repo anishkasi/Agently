@@ -43,7 +43,6 @@ venv.bak/
 logs/
 tmp/
 temp/
-cache/
 *.pid
 *.gz
 *.out
@@ -73,3 +72,8 @@ htmlcov/
 nosetests.xml
 coverage.xml
 *.cover
+
+# ---- Project-specific ----
+# Ignore generic caches but include your top-level /cache folder
+# (remove the blanket "cache/" ignore)
+!cache/
