@@ -1,0 +1,75 @@
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg
+*.egg-info/
+.Python
+build/
+develop-eggs/
+dist/
+eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.manifest
+*.spec
+pip-wheel-metadata/
+venv/
+.env/
+env/
+venv.bak/
+*.sqlite3
+*.db
+
+# ---- Environment / Secrets ----
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# ---- IDE / Editor ----
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ---- Logs / Temp ----
+*.log
+logs/
+tmp/
+temp/
+cache/
+*.pid
+*.gz
+*.out
+
+# ---- Docker ----
+*.tar
+docker-compose.override.yml
+.docker/
+.dockerignore
+__docker_build__/
+*.bak
+
+# ---- Jupyter / Notebooks ----
+.ipynb_checkpoints/
+*.ipynb
+
+# ---- OS Files ----
+.DS_Store
+Thumbs.db
+
+# ---- Coverage / Testing ----
+htmlcov/
+.coverage
+.cache/
+.pytest_cache/
+.tox/
+nosetests.xml
+coverage.xml
+*.cover

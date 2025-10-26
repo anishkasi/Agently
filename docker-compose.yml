@@ -1,0 +1,82 @@
+version: "3.9"
+
+services:
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  bot:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    env_file:
+      - .env.docker
+    environment:
+      REDIS_URL: redis://redis:6379/0
+      WEBHOOK_LISTEN: 0.0.0.0
+      WEBHOOK_PORT: 8080
+    depends_on:
+      redis:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 30s
+    restart: unless-stopped
+
+  worker_embeddings:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    command: ["python", "-m", "worker.embedding_worker"]
+    env_file:
+      - .env.docker
+    environment:
+      REDIS_URL: redis://redis:6379/0
+    depends_on:
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  worker_cleanup:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    command: ["python", "-m", "worker.cleanup_worker"]
+    env_file:
+      - .env.docker
+    environment:
+      REDIS_URL: redis://redis:6379/0
+    depends_on:
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:1.25-alpine
+    depends_on:
+      bot:
+        condition: service_healthy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./docker/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    restart: unless-stopped
+
+volumes:
+  redis_data:
+
+
